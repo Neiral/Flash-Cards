@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Smart Flashcards Organizer</title>
+  <!-- Google Fonts: Poppins -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+  <style>
+    /* Global Styles */
+    * {
+      box-sizing: border-box;
+    }
+    body {
+      font-family: 'Poppins', sans-serif;
+      margin: 0;
+      background-color: #FCE7C8; /* Warm light background */
+      color: #333;
+    }
+    /* Header & Navigation */
+    header {
+      background: linear-gradient(90deg, #5c258d, #4389a2);
+      color: #fff;
+      padding: 20px;
+      text-align: center;
+    }
+    header nav {
+      margin-top: 10px;
+    }
+    header nav button {
+      background-color: #FADA7A;
+      border: none;
+      padding: 8px 16px;
+      margin: 0 5px;
+      font-size: 14px;
+      color: #2f3542;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+    header nav button:hover {
+      background-color: #F0A04B;
+    }
+    /* Container for Flashcard Page */
+    .container {
+      display: flex;
+      min-height: calc(100vh - 120px);
+    }
+    /* Sidebar for Folders */
+    #folder-sidebar {
+      background-color: #B1C29E; /* Subtle green */
+      color: #fff;
+      width: 260px;
+      padding: 20px;
+      border-right: 3px solid #FADA7A;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    /* Folder Input and Button */
+    #new-folder {
+      display: flex;
+      flex-direction: column; /* Stack input and button vertically */
+      gap: 8px;
+      align-items: stretch;
+      margin-bottom: 15px;
+    }
+    #new-folder input {
+      padding: 8px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      background: white;
+      color: black;
+      width: 100%;
+    }
+    #new-folder button {
+      background-color: #FADA7A;
+      border: none;
+      color: #2f3542;
+      padding: 8px 12px;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+      font-size: 14px;
+      width: 100%;
+    }
+    #new-folder button:hover {
+      background-color: #F0A04B;
+    }
+    /* Folder List */
+    #folder-list {
+      list-style: none;
+      padding: 0;
+      margin-top: 10px;
+      flex-grow: 1;
+    }
+    #folder-list li {
+      padding: 12px;
+      margin-bottom: 8px;
+      background-color: rgba(0, 0, 0, 0.1);
+      border-radius: 4px;
+      cursor: pointer;
+      transition: background 0.3s;
+      font-size: 16px;
+      text-align: center;
+    }
+    #folder-list li.active,
+    #folder-list li:hover {
+      background-color: #F0A04B;
+      color: white;
+    }
+    /* Main Content (Flashcards) */
+    main {
+      flex: 1;
+      padding: 20px;
+    }
+    /* Input Section */
+    #input-section {
+      background-color: #fff;
+      padding: 20px;
+      border-radius: 8px;
+      margin-bottom: 30px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.1);
+    }
+    #flashcard-input {
+      width: 100%;
+      height: 120px;
+      padding: 12px;
+      font-size: 16px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      resize: vertical;
+      margin-bottom: 10px;
+    }
+    .folder-select {
+      margin-bottom: 10px;
+    }
+    .folder-select label {
+      margin-right: 10px;
+      font-weight: 500;
+    }
+    .folder-select select {
+      padding: 8px;
+      font-size: 16px;
+      border-radius: 4px;
+    }
+    /* General Button Styles */
+    button.general-btn {
+      background-color: #4389a2;
+      color: #fff;
+      border: none;
+      padding: 12px 24px;
+      font-size: 16px;
+      cursor: pointer;
+      border-radius: 4px;
+      transition: background-color 0.3s;
+    }
+    button.general-btn:hover {
+      background-color: #327f91;
+    }
+    /* Flashcards Display */
+    #flashcards-container {
+      background-color: #fff;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.1);
+      margin-bottom: 30px;
+    }
+    #cards {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+      justify-content: center;
+    }
+    /* Flip Card Styles */
+    .card {
+      background-color: transparent;
+      width: 400px;
+      height: 250px;
+      perspective: 1000px;
+    }
+    .card-inner {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      text-align: center;
+      transition: transform 0.6s;
+      transform-style: preserve-3d;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+      border-radius: 8px;
+      cursor: pointer;
+    }
+    .card-inner.flipped {
+      transform: rotateY(180deg);
+    }
+    .card-front,
+    .card-back {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      backface-visibility: hidden;
+      border-radius: 8px;
+      padding: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow-y: auto;
+      word-wrap: break-word;
+    }
+    .card-front {
+      background-color: #1e272e;
+      color: #f5f6fa;
+      font-size: 18px;
+    }
+    .card-back {
+      background-color: #FADA7A;
+      color: #2f3542;
+      transform: rotateY(180deg);
+      font-size: 18px;
+    }
+    /* Quiz Page Styles */
+    /* The Quiz view takes full width (no sidebar) */
+    #quiz-view main {
+      padding: 20px;
+    }
+    #quiz-section {
+      background-color: #fff;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.1);
+      max-width: 600px;
+      margin: 0 auto;
+      text-align: center;
+    }
+    #quiz-section h2 {
+      margin-top: 0;
+    }
+    #quiz-container input[type="text"] {
+      width: 100%;
+      padding: 8px;
+      font-size: 16px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      margin-bottom: 8px;
+    }
+    #quiz-container p {
+      font-size: 18px;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Smart Flashcards Organizer</h1>
+    <nav>
+      <button id="nav-flashcards">Flashcards</button>
+      <button id="nav-quiz">Quiz</button>
+    </nav>
+  </header>
+
+  <!-- Flashcards View -->
+  <div id="flashcard-view">
+    <div class="container">
+      <!-- Sidebar for Folder Functionality -->
+      <aside id="folder-sidebar">
+        <h2>Folders</h2>
+        <div id="new-folder">
+          <input type="text" id="folder-name-input" placeholder="New folder name">
+          <button id="add-folder-btn">Add Folder</button>
+        </div>
+        <ul id="folder-list">
+          <!-- Folder items will be rendered here -->
+        </ul>
+      </aside>
+      <!-- Main Content for Flashcards -->
+      <main>
+        <!-- Input Section for Flashcards -->
+        <section id="input-section">
+          <h2>Enter Your Flashcard Data</h2>
+          <p>
+            Paste your flashcard text below (one per line, with question and answer separated by " - "):
+          </p>
+          <textarea id="flashcard-input" placeholder="Example: What were the three main estates of France? - The three estates were: Clergy, Nobility, and Commoners."></textarea>
+          <!-- Folder selection dropdown -->
+          <div class="folder-select">
+            <label for="folder-select">Select Folder:</label>
+            <select id="folder-select">
+              <!-- Options will be loaded dynamically -->
+            </select>
+          </div>
+          <button id="generate-btn" class="general-btn">Generate Flashcards</button>
+        </section>
+        <!-- Flashcards Display -->
+        <section id="flashcards-container">
+          <h2 id="folder-title">Your Flashcards</h2>
+          <div id="cards">
+            <!-- Flashcards will appear here -->
+          </div>
+        </section>
+      </main>
+    </div>
+  </div>
+
+  <!-- Quiz View -->
+  <div id="quiz-view" style="display:none;">
+    <main>
+      <section id="quiz-section">
+        <h2>Quiz Section</h2>
+        <button id="start-quiz-btn" class="general-btn">Start Quiz</button>
+        <div id="quiz-container" style="display:none;">
+          <p id="quiz-question"></p>
+          <input type="text" id="quiz-input" placeholder="Your answer here">
+          <button id="submit-answer-btn" class="general-btn">Submit Answer</button>
+          <p id="quiz-feedback" style="display:none; margin-top:8px;"></p>
+          <button id="next-question-btn" class="general-btn" style="display:none;">Next Question</button>
+        </div>
+        <button id="back-to-flashcards-btn" class="general-btn" style="margin-top: 15px;">Back to Flashcards</button>
+      </section>
+    </main>
+  </div>
+
+  <script>
+    // Navigation logic for switching views
+    const navFlashcards = document.getElementById('nav-flashcards');
+    const navQuiz = document.getElementById('nav-quiz');
+    const flashcardView = document.getElementById('flashcard-view');
+    const quizView = document.getElementById('quiz-view');
+    const backToFlashcardsBtn = document.getElementById('back-to-flashcards-btn');
+
+    navFlashcards.addEventListener('click', () => {
+      flashcardView.style.display = 'block';
+      quizView.style.display = 'none';
+    });
+    navQuiz.addEventListener('click', () => {
+      flashcardView.style.display = 'none';
+      quizView.style.display = 'block';
+    });
+    backToFlashcardsBtn.addEventListener('click', () => {
+      flashcardView.style.display = 'block';
+      quizView.style.display = 'none';
+    });
+  </script>
+
+  <script>
+    // ---------- Data Structures ----------
+    function getStoredFolders() {
+      return JSON.parse(localStorage.getItem('folders')) || [];
+    }
+    function saveFolders(folders) {
+      localStorage.setItem('folders', JSON.stringify(folders));
+    }
+
+    // ---------- UI Elements (Flashcards View) ----------
+    const folderListElem = document.getElementById('folder-list');
+    const folderSelectElem = document.getElementById('folder-select');
+    const folderNameInput = document.getElementById('folder-name-input');
+    const addFolderBtn = document.getElementById('add-folder-btn');
+    const flashcardInput = document.getElementById('flashcard-input');
+    const generateBtn = document.getElementById('generate-btn');
+    const cardsContainer = document.getElementById('cards');
+    const folderTitle = document.getElementById('folder-title');
+
+    let folders = getStoredFolders();
+    let currentFolderId = null; // current selected folder id
+
+    // ---------- Folder Functions ----------
+    function renderFolderList() {
+      folderListElem.innerHTML = '';
+      folderSelectElem.innerHTML = '';
+      folders.forEach((folder) => {
+        const li = document.createElement('li');
+        li.textContent = folder.name;
+        li.dataset.id = folder.id;
+        li.draggable = true;
+        if (folder.id === currentFolderId) {
+          li.classList.add('active');
+        }
+        li.addEventListener('dragstart', (e) => {
+          e.dataTransfer.setData('text/plain', folder.id);
+          li.classList.add('dragging');
+        });
+        li.addEventListener('dragend', () => {
+          li.classList.remove('dragging');
+        });
+        li.addEventListener('dragover', (e) => {
+          e.preventDefault();
+          li.classList.add('drag-over');
+        });
+        li.addEventListener('dragleave', () => {
+          li.classList.remove('drag-over');
+        });
+        li.addEventListener('drop', (e) => {
+          e.preventDefault();
+          li.classList.remove('drag-over');
+          const draggedId = e.dataTransfer.getData('text/plain');
+          const targetId = folder.id;
+          reorderFolders(draggedId, targetId);
+        });
+        li.addEventListener('click', () => {
+          currentFolderId = folder.id;
+          renderFolderList();
+          renderFlashcards();
+        });
+        folderListElem.appendChild(li);
+
+        const option = document.createElement('option');
+        option.value = folder.id;
+        option.textContent = folder.name;
+        if (folder.id === currentFolderId) option.selected = true;
+        folderSelectElem.appendChild(option);
+      });
+      if (!currentFolderId && folders.length > 0) {
+        currentFolderId = folders[0].id;
+        renderFolderList();
+        renderFlashcards();
+      }
+    }
+    function reorderFolders(draggedId, targetId) {
+      const draggedIndex = folders.findIndex(f => f.id === draggedId);
+      const targetIndex = folders.findIndex(f => f.id === targetId);
+      if (draggedIndex < 0 || targetIndex < 0) return;
+      const [draggedFolder] = folders.splice(draggedIndex, 1);
+      folders.splice(targetIndex, 0, draggedFolder);
+      saveFolders(folders);
+      renderFolderList();
+    }
+    addFolderBtn.addEventListener('click', () => {
+      const name = folderNameInput.value.trim();
+      if (!name) {
+        alert('Enter a folder name.');
+        return;
+      }
+      const newFolder = {
+        id: Date.now().toString(),
+        name: name,
+        flashcards: []
+      };
+      folders.push(newFolder);
+      saveFolders(folders);
+      folderNameInput.value = '';
+      currentFolderId = newFolder.id;
+      renderFolderList();
+      renderFlashcards();
+    });
+
+    // ---------- Flashcard Functions ----------
+    function renderFlashcards() {
+      cardsContainer.innerHTML = '';
+      const folder = folders.find(f => f.id === currentFolderId);
+      folderTitle.textContent = folder ? folder.name + " - Flashcards" : "Your Flashcards";
+      if (!folder) return;
+      folder.flashcards.forEach((card) => {
+        const cardElem = document.createElement('div');
+        cardElem.className = 'card';
+        const cardInner = document.createElement('div');
+        cardInner.className = 'card-inner';
+        const cardFront = document.createElement('div');
+        cardFront.className = 'card-front';
+        cardFront.textContent = card.question;
+        const cardBack = document.createElement('div');
+        cardBack.className = 'card-back';
+        cardBack.textContent = card.answer;
+        cardInner.appendChild(cardFront);
+        cardInner.appendChild(cardBack);
+        cardElem.appendChild(cardInner);
+        cardElem.addEventListener('click', () => {
+          cardInner.classList.toggle('flipped');
+        });
+        cardsContainer.appendChild(cardElem);
+      });
+    }
+    function parseFlashcardText(text) {
+      const lines = text.split('\n').map(line => line.trim()).filter(line => line !== '');
+      const cards = [];
+      lines.forEach(line => {
+        const parts = line.split(' - ');
+        if (parts.length >= 2) {
+          const question = parts[0].trim();
+          const answer = parts.slice(1).join(' - ').trim();
+          cards.push({ question, answer });
+        }
+      });
+      return cards;
+    }
+    generateBtn.addEventListener('click', () => {
+      const inputText = flashcardInput.value;
+      if (!inputText) {
+        alert('Please enter flashcard data.');
+        return;
+      }
+      const newCards = parseFlashcardText(inputText);
+      if (newCards.length === 0) {
+        alert('No valid flashcard data found. Use " - " as a delimiter.');
+        return;
+      }
+      const selectedFolderId = folderSelectElem.value || currentFolderId;
+      const folder = folders.find(f => f.id === selectedFolderId);
+      if (!folder) {
+        alert('Please select or create a folder first.');
+        return;
+      }
+      folder.flashcards = folder.flashcards.concat(newCards);
+      saveFolders(folders);
+      flashcardInput.value = '';
+      renderFlashcards();
+    });
+
+    // ---------- Quiz Functions ----------
+    let quizCurrentCard = null;
+    const startQuizBtn = document.getElementById('start-quiz-btn');
+    const quizContainer = document.getElementById('quiz-container');
+    const quizQuestionElem = document.getElementById('quiz-question');
+    const quizInput = document.getElementById('quiz-input');
+    const submitAnswerBtn = document.getElementById('submit-answer-btn');
+    const quizFeedback = document.getElementById('quiz-feedback');
+    const nextQuestionBtn = document.getElementById('next-question-btn');
+
+    function loadNewQuestion() {
+      const folder = folders.find(f => f.id === currentFolderId);
+      if (!folder || folder.flashcards.length === 0) {
+        alert('No flashcards available in the current folder for the quiz.');
+        return;
+      }
+      quizCurrentCard = folder.flashcards[Math.floor(Math.random() * folder.flashcards.length)];
+      quizQuestionElem.textContent = quizCurrentCard.question;
+      quizInput.value = '';
+      quizInput.disabled = false;
+      quizFeedback.style.display = 'none';
+      submitAnswerBtn.style.display = 'inline-block';
+      nextQuestionBtn.style.display = 'none';
+    }
+    startQuizBtn.addEventListener('click', () => {
+      const folder = folders.find(f => f.id === currentFolderId);
+      if (!folder || folder.flashcards.length === 0) {
+        alert('Please select a folder with flashcards before starting the quiz.');
+        return;
+      }
+      startQuizBtn.style.display = 'none';
+      quizContainer.style.display = 'block';
+      loadNewQuestion();
+    });
+    submitAnswerBtn.addEventListener('click', () => {
+      const userAnswer = quizInput.value.trim().toLowerCase();
+      const correctAnswer = quizCurrentCard.answer.trim().toLowerCase();
+      if (userAnswer === correctAnswer) {
+        quizFeedback.textContent = 'Correct!';
+      } else {
+        quizFeedback.textContent = 'Incorrect. The correct answer is: ' + quizCurrentCard.answer;
+      }
+      quizFeedback.style.display = 'block';
+      quizInput.disabled = true;
+      submitAnswerBtn.style.display = 'none';
+      nextQuestionBtn.style.display = 'inline-block';
+    });
+    nextQuestionBtn.addEventListener('click', () => {
+      loadNewQuestion();
+    });
+
+    // ---------- Initialization ----------
+    document.addEventListener('DOMContentLoaded', () => {
+      renderFolderList();
+      renderFlashcards();
+    });
+  </script>
+</body>
+</html>
