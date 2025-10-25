@@ -3,23 +3,34 @@
 <head>
   <meta charset="UTF-8">
   <title>Smart Flashcards Organizer</title>
-  <!-- Google Fonts: Poppins -->
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+  <!-- Google Fonts: Inter and Orbitron -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
   <style>
+    :root {
+      /* Default fallback theme */
+      --bg-color: #FCE7C8;
+      --text-color: #333;
+      --header-bg: linear-gradient(90deg, #5c258d, #4389a2);
+      --header-text: #fff;
+      --button-bg: #FADA7A;
+      --button-hover: #F0A04B;
+      --card-front-bg: #1e272e;
+      --card-front-text: #f5f6fa;
+      --card-back-bg: #FADA7A;
+      --card-back-text: #2f3542;
+    }
     /* Global Styles */
-    * {
-      box-sizing: border-box;
-    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
-      font-family: 'Poppins', sans-serif;
-      margin: 0;
-      background-color: #FCE7C8; /* Warm light background */
-      color: #333;
+      font-family: 'Inter', sans-serif;
+      background-color: var(--bg-color);
+      color: var(--text-color);
+      line-height: 1.5;
+      transition: background 0.3s ease, color 0.3s ease;
     }
-    /* Header & Navigation */
     header {
-      background: linear-gradient(90deg, #5c258d, #4389a2);
-      color: #fff;
+      background: var(--header-bg);
+      color: var(--header-text);
       padding: 20px;
       text-align: center;
     }
@@ -27,7 +38,7 @@
       margin-top: 10px;
     }
     header nav button {
-      background-color: #FADA7A;
+      background-color: var(--button-bg);
       border: none;
       padding: 8px 16px;
       margin: 0 5px;
@@ -35,91 +46,106 @@
       color: #2f3542;
       border-radius: 4px;
       cursor: pointer;
-      transition: background-color 0.3s;
+      transition: background-color 0.3s ease;
     }
     header nav button:hover {
-      background-color: #F0A04B;
+      background-color: var(--button-hover);
     }
-    /* Container for Flashcard Page */
+    #theme-selector {
+      margin-left: 20px;
+      padding: 6px;
+      font-size: 14px;
+    }
     .container {
       display: flex;
       min-height: calc(100vh - 120px);
+      padding: 10px;
+      animation: slideIn 0.8s ease-out;
     }
-    /* Sidebar for Folders */
+    /* Sidebar */
     #folder-sidebar {
-      background-color: #B1C29E; /* Subtle green */
+      background-color: #B1C29E;
       color: #fff;
       width: 260px;
       padding: 20px;
-      border-right: 3px solid #FADA7A;
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
+      border-right: 3px solid var(--button-bg);
     }
-    /* Folder Input and Button */
     #new-folder {
       display: flex;
-      flex-direction: column; /* Stack input and button vertically */
+      flex-direction: column;
       gap: 8px;
-      align-items: stretch;
       margin-bottom: 15px;
     }
     #new-folder input {
       padding: 8px;
       border: 1px solid #ccc;
       border-radius: 4px;
-      background: white;
-      color: black;
-      width: 100%;
+      background: #fff;
+      color: #000;
     }
     #new-folder button {
-      background-color: #FADA7A;
+      background-color: var(--button-bg);
       border: none;
       color: #2f3542;
       padding: 8px 12px;
       border-radius: 4px;
       cursor: pointer;
-      transition: background-color 0.3s;
+      transition: background-color 0.3s ease;
       font-size: 14px;
-      width: 100%;
     }
     #new-folder button:hover {
-      background-color: #F0A04B;
+      background-color: var(--button-hover);
     }
-    /* Folder List */
+    /* Folder Controls */
+    #folder-controls {
+      display: flex;
+      gap: 5px;
+      margin-bottom: 10px;
+    }
+    #folder-controls button {
+      flex: 1;
+      background-color: var(--button-bg);
+      border: none;
+      padding: 8px;
+      font-size: 14px;
+      color: #2f3542;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+    #folder-controls button:hover {
+      background-color: var(--button-hover);
+    }
     #folder-list {
       list-style: none;
-      padding: 0;
       margin-top: 10px;
       flex-grow: 1;
     }
     #folder-list li {
-      padding: 12px;
+      padding: 10px;
       margin-bottom: 8px;
-      background-color: rgba(0, 0, 0, 0.1);
+      background-color: rgba(0,0,0,0.1);
       border-radius: 4px;
       cursor: pointer;
-      transition: background 0.3s;
+      transition: background 0.3s ease;
       font-size: 16px;
       text-align: center;
+      animation: fadeIn 0.5s ease;
     }
     #folder-list li.active,
     #folder-list li:hover {
-      background-color: #F0A04B;
-      color: white;
+      background-color: var(--button-hover);
+      color: #fff;
     }
-    /* Main Content (Flashcards) */
-    main {
-      flex: 1;
-      padding: 20px;
-    }
-    /* Input Section */
+    /* Main Content */
+    main { flex: 1; padding: 20px; }
     #input-section {
       background-color: #fff;
       padding: 20px;
       border-radius: 8px;
-      margin-bottom: 30px;
+      margin-bottom: 20px;
       box-shadow: 0 2px 12px rgba(0,0,0,0.1);
+      animation: fadeIn 0.6s ease;
     }
     #flashcard-input {
       width: 100%;
@@ -130,6 +156,28 @@
       border-radius: 4px;
       resize: vertical;
       margin-bottom: 10px;
+    }
+    /* Difficulty Selector */
+    #difficulty-select {
+      padding: 8px;
+      font-size: 16px;
+      border-radius: 4px;
+      margin-bottom: 10px;
+    }
+    /* Voice Input */
+    #voice-input-btn {
+      background-color: #4389a2;
+      color: #fff;
+      border: none;
+      padding: 8px 12px;
+      font-size: 14px;
+      cursor: pointer;
+      border-radius: 4px;
+      margin-bottom: 10px;
+      transition: background-color 0.3s ease;
+    }
+    #voice-input-btn:hover {
+      background-color: #327f91;
     }
     .folder-select {
       margin-bottom: 10px;
@@ -143,7 +191,6 @@
       font-size: 16px;
       border-radius: 4px;
     }
-    /* General Button Styles */
     button.general-btn {
       background-color: #4389a2;
       color: #fff;
@@ -152,7 +199,7 @@
       font-size: 16px;
       cursor: pointer;
       border-radius: 4px;
-      transition: background-color 0.3s;
+      transition: background-color 0.3s ease;
     }
     button.general-btn:hover {
       background-color: #327f91;
@@ -163,7 +210,14 @@
       padding: 20px;
       border-radius: 8px;
       box-shadow: 0 2px 12px rgba(0,0,0,0.1);
-      margin-bottom: 30px;
+      margin-bottom: 20px;
+      animation: fadeIn 0.6s ease;
+    }
+    #folder-title {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
     }
     #cards {
       display: flex;
@@ -171,19 +225,32 @@
       gap: 20px;
       justify-content: center;
     }
-    /* Flip Card Styles */
+    /* Flashcard Styles */
     .card {
       background-color: transparent;
       width: 400px;
       height: 250px;
       perspective: 1000px;
+      position: relative;
+      border: 1px dashed transparent;
+      animation: fadeIn 0.5s ease;
+      transition: transform 0.2s ease;
+    }
+    .card:hover {
+      transform: scale(1.02);
+    }
+    .card.dragging {
+      opacity: 0.5;
+    }
+    .card.drag-over {
+      border: 1px dashed var(--button-hover);
     }
     .card-inner {
       position: relative;
       width: 100%;
       height: 100%;
       text-align: center;
-      transition: transform 0.6s;
+      transition: transform 0.6s cubic-bezier(0.68,-0.55,0.27,1.55);
       transform-style: preserve-3d;
       box-shadow: 0 4px 16px rgba(0,0,0,0.2);
       border-radius: 8px;
@@ -204,23 +271,106 @@
       align-items: center;
       justify-content: center;
       overflow-y: auto;
-      word-wrap: break-word;
     }
     .card-front {
-      background-color: #1e272e;
-      color: #f5f6fa;
+      background-color: var(--card-front-bg);
+      color: var(--card-front-text);
       font-size: 18px;
     }
     .card-back {
-      background-color: #FADA7A;
-      color: #2f3542;
+      background-color: var(--card-back-bg);
+      color: var(--card-back-text);
       transform: rotateY(180deg);
       font-size: 18px;
     }
-    /* Quiz Page Styles */
-    /* The Quiz view takes full width (no sidebar) */
+    .card-btns {
+      position: absolute;
+      top: 5px;
+      right: 5px;
+      display: flex;
+      gap: 5px;
+    }
+    .card-btns button {
+      background-color: rgba(0,0,0,0.5);
+      color: #fff;
+      border: none;
+      padding: 4px 8px;
+      font-size: 12px;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    .card-btns button:hover {
+      background-color: rgba(0,0,0,0.7);
+    }
+    /* Dashboard Styles */
+    #dashboard-view {
+      display: none;
+      padding: 20px;
+      animation: fadeIn 0.8s ease;
+    }
+    #analytics-dashboard {
+      background-color: #fff;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.1);
+      max-width: 600px;
+      margin: 0 auto;
+    }
+    #analytics-dashboard h3 {
+      margin-bottom: 10px;
+    }
+    #analytics-dashboard p {
+      font-size: 16px;
+      margin: 6px 0;
+    }
+    /* Modal for Shareable Deck */
+    #share-modal {
+      display: none;
+      position: fixed;
+      z-index: 100;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      overflow: auto;
+      background-color: rgba(0,0,0,0.5);
+      animation: fadeIn 0.5s ease;
+    }
+    #share-modal-content {
+      background-color: #fff;
+      margin: 10% auto;
+      padding: 20px;
+      border-radius: 8px;
+      max-width: 600px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.2);
+      animation: slideIn 0.5s ease;
+    }
+    #share-modal-content h3 { margin-top: 0; }
+    #share-modal-content pre {
+      background-color: #f0f0f0;
+      padding: 10px;
+      border-radius: 4px;
+      max-height: 300px;
+      overflow-y: auto;
+    }
+    #share-modal-content button {
+      background-color: #4389a2;
+      color: #fff;
+      border: none;
+      padding: 8px 12px;
+      font-size: 14px;
+      cursor: pointer;
+      border-radius: 4px;
+      transition: background-color 0.3s ease;
+      margin-top: 10px;
+    }
+    #share-modal-content button:hover {
+      background-color: #327f91;
+    }
+    /* Quiz Styles */
     #quiz-view main {
       padding: 20px;
+      animation: fadeIn 0.8s ease;
     }
     #quiz-section {
       background-color: #fff;
@@ -231,9 +381,7 @@
       margin: 0 auto;
       text-align: center;
     }
-    #quiz-section h2 {
-      margin-top: 0;
-    }
+    #quiz-section h2 { margin-top: 0; }
     #quiz-container input[type="text"] {
       width: 100%;
       padding: 8px;
@@ -242,8 +390,15 @@
       border-radius: 4px;
       margin-bottom: 8px;
     }
-    #quiz-container p {
-      font-size: 18px;
+    #quiz-container p { font-size: 18px; }
+    
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes slideIn {
+      from { transform: translateX(-50px); opacity: 0; }
+      to { transform: translateX(0); opacity: 1; }
     }
   </style>
 </head>
@@ -253,47 +408,57 @@
     <nav>
       <button id="nav-flashcards">Flashcards</button>
       <button id="nav-quiz">Quiz</button>
+      <button id="nav-dashboard">Dashboard</button>
+      <select id="theme-selector">
+        <option value="neon">Neon</option>
+        <option value="midnight">Midnight</option>
+        <option value="coffee">Coffee</option>
+        <option value="lava">Lava</option>
+        <option value="solarflare">Solar Flare</option>
+      </select>
     </nav>
   </header>
 
   <!-- Flashcards View -->
   <div id="flashcard-view">
     <div class="container">
-      <!-- Sidebar for Folder Functionality -->
       <aside id="folder-sidebar">
         <h2>Folders</h2>
         <div id="new-folder">
           <input type="text" id="folder-name-input" placeholder="New folder name">
           <button id="add-folder-btn">Add Folder</button>
         </div>
-        <ul id="folder-list">
-          <!-- Folder items will be rendered here -->
-        </ul>
+        <div id="folder-controls">
+          <button id="export-folder-btn">Export</button>
+          <button id="import-folder-btn">Import</button>
+          <button id="share-deck-btn">Share Deck</button>
+        </div>
+        <input type="file" id="import-folder-input" accept="application/json" style="display:none;">
+        <ul id="folder-list"></ul>
       </aside>
-      <!-- Main Content for Flashcards -->
       <main>
-        <!-- Input Section for Flashcards -->
         <section id="input-section">
           <h2>Enter Your Flashcard Data</h2>
-          <p>
-            Paste your flashcard text below (one per line, with question and answer separated by " - "):
-          </p>
-          <textarea id="flashcard-input" placeholder="Example: What were the three main estates of France? - The three estates were: Clergy, Nobility, and Commoners."></textarea>
-          <!-- Folder selection dropdown -->
+          <p>Paste your flashcard text below (one per line, with question and answer separated by " --- "):</p>
+          <textarea id="flashcard-input" placeholder="Example: What were the three main estates of France? --- The three estates were: Clergy, Nobility, and Commoners."></textarea>
+          <button id="voice-input-btn">🎙️ Record</button>
           <div class="folder-select">
             <label for="folder-select">Select Folder:</label>
-            <select id="folder-select">
-              <!-- Options will be loaded dynamically -->
+            <select id="folder-select"></select>
+          </div>
+          <div class="folder-select">
+            <label for="difficulty-select">Difficulty:</label>
+            <select id="difficulty-select">
+              <option value="Every Day">Every Day</option>
+              <option value="Every 2 Days">Every 2 Days</option>
+              <option value="Every 3 Days">Every 3 Days</option>
             </select>
           </div>
           <button id="generate-btn" class="general-btn">Generate Flashcards</button>
         </section>
-        <!-- Flashcards Display -->
         <section id="flashcards-container">
           <h2 id="folder-title">Your Flashcards</h2>
-          <div id="cards">
-            <!-- Flashcards will appear here -->
-          </div>
+          <div id="cards"></div>
         </section>
       </main>
     </div>
@@ -312,56 +477,216 @@
           <p id="quiz-feedback" style="display:none; margin-top:8px;"></p>
           <button id="next-question-btn" class="general-btn" style="display:none;">Next Question</button>
         </div>
-        <button id="back-to-flashcards-btn" class="general-btn" style="margin-top: 15px;">Back to Flashcards</button>
+        <button id="back-to-flashcards-btn" class="general-btn" style="margin-top:15px;">Back to Flashcards</button>
       </section>
     </main>
   </div>
 
+  <!-- Dashboard View -->
+  <div id="dashboard-view">
+    <div id="analytics-dashboard">
+      <h3>Analytics Dashboard</h3>
+      <p id="total-folders">Total Folders: 0</p>
+      <p id="total-flashcards">Total Flashcards: 0</p>
+      <p id="quiz-attempts">Quiz Attempts: 0</p>
+      <p id="quiz-correct">Correct Answers: 0</p>
+      <p id="points-earned">Points: 0</p>
+      <p id="current-streak">Current Streak: 0</p>
+    </div>
+  </div>
+
+  <!-- Share Deck Modal -->
+  <div id="share-modal">
+    <div id="share-modal-content">
+      <h3>Shareable Deck Preview</h3>
+      <pre id="share-preview"></pre>
+      <button id="copy-share-btn">Copy Shareable Text</button>
+      <button id="close-share-btn">Close</button>
+    </div>
+  </div>
+
   <script>
-    // Navigation logic for switching views
+    // --- NEW FEATURE: Background Notifications via Service Worker ---
+    // Register the Service Worker (ensure you have a corresponding sw.js file)
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('ssww.js').then(reg => {
+        console.log("Service Worker Registered!");
+      }).catch(err => {
+        console.log("Service Worker registration failed: ", err);
+      });
+    }
+
+    // Every 10 minutes, if the page is hidden, send a background notification
+    setInterval(() => {
+      if (document.hidden) {
+        navigator.serviceWorker.ready.then(registration => {
+          registration.showNotification("Hey! Your page is closed!", {
+            body: "This notification appears when the tab is closed.",
+            icon: "icon.png" // Ensure you have this icon or update the URL
+          });
+        });
+      }
+    }, 60000); // 60000 ms = 10 minutes
+    // --- END NEW FEATURE ---
+
+    // --- Notification Functions with Manipulative Rhyming Messages ---
+    const manipulativeMessages = [
+      "Don't delay, revise today—your dreams won't wait!",
+      "Study hard, study fast, or your future won't last!",
+      "Revise with might, keep your goals in sight!",
+      "Don't procrastinate, your brilliance can't wait!",
+      "Push your mind to soar, study and achieve more!",
+      "Flashcards in hand, conquer all and take a stand!",
+      "Hit those books with speed, your success is what you need!"
+    ];
+    
+    function requestPermission() {
+      Notification.requestPermission().then(permission => {
+        if (permission === "granted") {
+          console.log("Notification permission granted!");
+        } else {
+          console.log("Notification permission denied.");
+        }
+      });
+    }
+    function sendNotification() {
+      if (Notification.permission === "granted") {
+        const message = manipulativeMessages[Math.floor(Math.random() * manipulativeMessages.length)];
+        new Notification("Study Reminder", {
+          body: message,
+          icon: "https://via.placeholder.com/100"
+        });
+      } else if (Notification.permission === "default") {
+        requestPermission();
+      } else {
+        alert("Please allow notifications in browser settings.");
+      }
+    }
+    // For testing, send a notification every 5 seconds (adjust as needed)
+    setInterval(() => {
+      if (Notification.permission === "granted") {
+        sendNotification();
+      }
+    }, 60000);
+    // --- End Notification Functions ---
+
+    // Theme Switching
+    const themeSelector = document.getElementById('theme-selector');
+    function applyTheme(theme) {
+      switch(theme) {
+        case "solarflare":
+          document.documentElement.style.setProperty('--bg-color', '#121212');
+          document.documentElement.style.setProperty('--text-color', '#39FF14');
+          document.documentElement.style.setProperty('--header-bg', 'linear-gradient(90deg, #00FFFF, #FF00FF)');
+          document.documentElement.style.setProperty('--button-bg', '#00FFFF');
+          document.documentElement.style.setProperty('--button-hover', '#FF00FF');
+          break;
+        case "midnight":
+          document.documentElement.style.setProperty('--bg-color', '#354F52');
+          document.documentElement.style.setProperty('--text-color', '#354F52');
+          document.documentElement.style.setProperty('--header-bg', 'linear-gradient(90deg, #354F52, #84A98C)');
+          document.documentElement.style.setProperty('--button-bg', '#CAD2C5');
+          document.documentElement.style.setProperty('--button-hover', '#354F52');
+          break;
+        case "coffee":
+          document.documentElement.style.setProperty('--bg-color', '#EDE0D4');
+          document.documentElement.style.setProperty('--text-color', '#5C4033');
+          document.documentElement.style.setProperty('--header-bg', 'linear-gradient(90deg, #E6CCB2, #DDB892)');
+          document.documentElement.style.setProperty('--button-bg', '#B08968');
+          document.documentElement.style.setProperty('--button-hover', '#7F5539');
+          document.documentElement.style.setProperty('--border-color', '#9C6644');
+          break;
+        case "lava":
+          document.documentElement.style.setProperty('--bg-color', '#330000');
+          document.documentElement.style.setProperty('--text-color', '#FF4500');
+          document.documentElement.style.setProperty('--header-bg', 'linear-gradient(90deg, #FF0000, #FF7F50)');
+          document.documentElement.style.setProperty('--button-bg', '#FF4500');
+          document.documentElement.style.setProperty('--button-hover', '#FF6347');
+          break;
+        case "neon":
+          document.documentElement.style.setProperty('--bg-color', '#FFF3E0');
+          document.documentElement.style.setProperty('--text-color', '#BF360C');
+          document.documentElement.style.setProperty('--header-bg', 'linear-gradient(90deg, #FF7043, #D84315)');
+          document.documentElement.style.setProperty('--button-bg', '#FF7043');
+          document.documentElement.style.setProperty('--button-hover', '#FF8A65');
+          break;
+        default:
+          applyTheme("neon");
+      }
+    }
+    themeSelector.addEventListener('change', () => {
+      applyTheme(themeSelector.value);
+    });
+    applyTheme(themeSelector.value);
+
+    // Navigation
     const navFlashcards = document.getElementById('nav-flashcards');
     const navQuiz = document.getElementById('nav-quiz');
+    const navDashboard = document.getElementById('nav-dashboard');
     const flashcardView = document.getElementById('flashcard-view');
     const quizView = document.getElementById('quiz-view');
+    const dashboardView = document.getElementById('dashboard-view');
     const backToFlashcardsBtn = document.getElementById('back-to-flashcards-btn');
 
     navFlashcards.addEventListener('click', () => {
       flashcardView.style.display = 'block';
       quizView.style.display = 'none';
+      dashboardView.style.display = 'none';
     });
     navQuiz.addEventListener('click', () => {
       flashcardView.style.display = 'none';
       quizView.style.display = 'block';
+      dashboardView.style.display = 'none';
+    });
+    navDashboard.addEventListener('click', () => {
+      flashcardView.style.display = 'none';
+      quizView.style.display = 'none';
+      dashboardView.style.display = 'block';
+      updateDashboard();
     });
     backToFlashcardsBtn.addEventListener('click', () => {
       flashcardView.style.display = 'block';
       quizView.style.display = 'none';
     });
-  </script>
 
-  <script>
-    // ---------- Data Structures ----------
+    // Local Storage Helpers
     function getStoredFolders() {
       return JSON.parse(localStorage.getItem('folders')) || [];
     }
     function saveFolders(folders) {
       localStorage.setItem('folders', JSON.stringify(folders));
     }
+    function getQuizStats() {
+      return JSON.parse(localStorage.getItem('quizStats')) || { attempts: 0, correct: 0, points: 0, streak: 0 };
+    }
+    function saveQuizStats(stats) {
+      localStorage.setItem('quizStats', JSON.stringify(stats));
+    }
 
-    // ---------- UI Elements (Flashcards View) ----------
+    // UI Elements
     const folderListElem = document.getElementById('folder-list');
     const folderSelectElem = document.getElementById('folder-select');
     const folderNameInput = document.getElementById('folder-name-input');
     const addFolderBtn = document.getElementById('add-folder-btn');
+    const exportFolderBtn = document.getElementById('export-folder-btn');
+    const importFolderBtn = document.getElementById('import-folder-btn');
+    const importFolderInput = document.getElementById('import-folder-input');
+    const shareDeckBtn = document.getElementById('share-deck-btn');
+    const shareModal = document.getElementById('share-modal');
+    const sharePreview = document.getElementById('share-preview');
+    const copyShareBtn = document.getElementById('copy-share-btn');
+    const closeShareBtn = document.getElementById('close-share-btn');
     const flashcardInput = document.getElementById('flashcard-input');
     const generateBtn = document.getElementById('generate-btn');
+    const voiceInputBtn = document.getElementById('voice-input-btn');
+    const difficultySelect = document.getElementById('difficulty-select');
     const cardsContainer = document.getElementById('cards');
     const folderTitle = document.getElementById('folder-title');
 
     let folders = getStoredFolders();
-    let currentFolderId = null; // current selected folder id
+    let currentFolderId = null;
 
-    // ---------- Folder Functions ----------
+    // Folder Functions
     function renderFolderList() {
       folderListElem.innerHTML = '';
       folderSelectElem.innerHTML = '';
@@ -374,25 +699,33 @@
           li.classList.add('active');
         }
         li.addEventListener('dragstart', (e) => {
-          e.dataTransfer.setData('text/plain', folder.id);
+          e.dataTransfer.setData('folderId', folder.id);
           li.classList.add('dragging');
         });
-        li.addEventListener('dragend', () => {
-          li.classList.remove('dragging');
-        });
-        li.addEventListener('dragover', (e) => {
-          e.preventDefault();
-          li.classList.add('drag-over');
-        });
-        li.addEventListener('dragleave', () => {
-          li.classList.remove('drag-over');
-        });
+        li.addEventListener('dragend', () => { li.classList.remove('dragging'); });
+        li.addEventListener('dragover', (e) => { e.preventDefault(); li.classList.add('drag-over'); });
+        li.addEventListener('dragleave', () => { li.classList.remove('drag-over'); });
         li.addEventListener('drop', (e) => {
           e.preventDefault();
           li.classList.remove('drag-over');
-          const draggedId = e.dataTransfer.getData('text/plain');
-          const targetId = folder.id;
-          reorderFolders(draggedId, targetId);
+          const flashcardData = e.dataTransfer.getData('flashcard');
+          if (flashcardData) {
+            moveFlashcardToFolder(parseInt(flashcardData), folder.id);
+          } else {
+            const draggedFolderId = e.dataTransfer.getData('folderId');
+            if (draggedFolderId) {
+              reorderFolders(draggedFolderId, folder.id);
+            }
+          }
+        });
+        li.addEventListener('dblclick', () => {
+          const newName = prompt('Rename folder:', folder.name);
+          if (newName) {
+            folder.name = newName.trim();
+            saveFolders(folders);
+            renderFolderList();
+            renderFlashcards();
+          }
         });
         li.addEventListener('click', () => {
           currentFolderId = folder.id;
@@ -400,7 +733,6 @@
           renderFlashcards();
         });
         folderListElem.appendChild(li);
-
         const option = document.createElement('option');
         option.value = folder.id;
         option.textContent = folder.name;
@@ -424,15 +756,8 @@
     }
     addFolderBtn.addEventListener('click', () => {
       const name = folderNameInput.value.trim();
-      if (!name) {
-        alert('Enter a folder name.');
-        return;
-      }
-      const newFolder = {
-        id: Date.now().toString(),
-        name: name,
-        flashcards: []
-      };
+      if (!name) { alert('Enter a folder name.'); return; }
+      const newFolder = { id: Date.now().toString(), name: name, flashcards: [] };
       folders.push(newFolder);
       saveFolders(folders);
       folderNameInput.value = '';
@@ -440,70 +765,217 @@
       renderFolderList();
       renderFlashcards();
     });
+    exportFolderBtn.addEventListener('click', () => {
+      const folder = folders.find(f => f.id === currentFolderId);
+      if (!folder) return alert('No folder selected.');
+      const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(folder.flashcards, null, 2));
+      const a = document.createElement('a');
+      a.href = dataStr;
+      a.download = folder.name + "_flashcards.json";
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+    });
+    importFolderBtn.addEventListener('click', () => {
+      importFolderInput.click();
+    });
+    importFolderInput.addEventListener('change', (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        try {
+          const importedFlashcards = JSON.parse(event.target.result);
+          if (!Array.isArray(importedFlashcards)) {
+            throw new Error("Imported data is not an array.");
+          }
+          let folder = folders.find(f => f.id === currentFolderId);
+          if (!folder) {
+            if (folders.length > 0) {
+              currentFolderId = folders[0].id;
+              folder = folders[0];
+            } else {
+              alert("No folder available. Please create a folder first.");
+              return;
+            }
+          }
+          folder.flashcards = folder.flashcards.concat(importedFlashcards);
+          saveFolders(folders);
+          renderFlashcards();
+          alert("Flashcards imported successfully!");
+        } catch(err) {
+          alert('Invalid file format: ' + err.message);
+        }
+      };
+      reader.readAsText(file);
+      importFolderInput.value = "";
+    });
+    shareDeckBtn.addEventListener('click', () => {
+      const folder = folders.find(f => f.id === currentFolderId);
+      if (!folder) return alert('No folder selected.');
+      let previewText = `Deck: ${folder.name}\nTotal Cards: ${folder.flashcards.length}\n\n`;
+      folder.flashcards.forEach((card, i) => {
+        previewText += `${i+1}. ${card.question}\n`;
+      });
+      sharePreview.textContent = previewText;
+      shareModal.style.display = 'block';
+    });
+    copyShareBtn.addEventListener('click', () => {
+      navigator.clipboard.writeText(sharePreview.textContent).then(() => {
+        alert('Deck preview copied to clipboard!');
+      });
+    });
+    closeShareBtn.addEventListener('click', () => {
+      shareModal.style.display = 'none';
+    });
+    function moveFlashcardToFolder(flashcardIndex, targetFolderId) {
+      const currentFolder = folders.find(f => f.id === currentFolderId);
+      const targetFolder = folders.find(f => f.id === targetFolderId);
+      if (!currentFolder || !targetFolder || currentFolder.id === targetFolderId) return;
+      const [card] = currentFolder.flashcards.splice(flashcardIndex, 1);
+      targetFolder.flashcards.push(card);
+      saveFolders(folders);
+      renderFlashcards();
+    }
 
-    // ---------- Flashcard Functions ----------
+    // Flashcard Functions
     function renderFlashcards() {
       cardsContainer.innerHTML = '';
       const folder = folders.find(f => f.id === currentFolderId);
-      folderTitle.textContent = folder ? folder.name + " - Flashcards" : "Your Flashcards";
+      folderTitle.textContent = folder ? folder.name + " - Flashcards (" + folder.flashcards.length + ")" : "Your Flashcards";
       if (!folder) return;
-      folder.flashcards.forEach((card) => {
+      folder.flashcards.forEach((card, index) => {
         const cardElem = document.createElement('div');
         cardElem.className = 'card';
+        cardElem.draggable = true;
+        cardElem.dataset.index = index;
         const cardInner = document.createElement('div');
         cardInner.className = 'card-inner';
         const cardFront = document.createElement('div');
         cardFront.className = 'card-front';
-        cardFront.textContent = card.question;
+        cardFront.textContent = card.question + " (" + card.difficulty + ")";
         const cardBack = document.createElement('div');
         cardBack.className = 'card-back';
         cardBack.textContent = card.answer;
         cardInner.appendChild(cardFront);
         cardInner.appendChild(cardBack);
         cardElem.appendChild(cardInner);
+        const btnContainer = document.createElement('div');
+        btnContainer.className = 'card-btns';
+        const editBtn = document.createElement('button');
+        editBtn.textContent = 'Edit';
+        editBtn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const newQuestion = prompt('Edit Question:', card.question);
+          const newAnswer = prompt('Edit Answer:', card.answer);
+          const newDifficulty = prompt('Edit Difficulty (Easy, Medium, Hard):', card.difficulty);
+          if (newQuestion && newAnswer && newDifficulty) {
+            card.question = newQuestion.trim();
+            card.answer = newAnswer.trim();
+            card.difficulty = newDifficulty.trim();
+            saveFolders(folders);
+            renderFlashcards();
+          }
+        });
+        const deleteBtn = document.createElement('button');
+        deleteBtn.textContent = 'Delete';
+        deleteBtn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          if (confirm('Delete this flashcard?')) {
+            folder.flashcards.splice(index, 1);
+            saveFolders(folders);
+            renderFlashcards();
+          }
+        });
+        btnContainer.appendChild(editBtn);
+        btnContainer.appendChild(deleteBtn);
+        cardElem.appendChild(btnContainer);
         cardElem.addEventListener('click', () => {
-          cardInner.classList.toggle('flipped');
+          if (!cardElem.classList.contains('dragging')) {
+            cardInner.classList.toggle('flipped');
+          }
+        });
+        cardElem.addEventListener('dragstart', (e) => {
+          e.dataTransfer.setData('flashcard', index);
+          cardElem.classList.add('dragging');
+        });
+        cardElem.addEventListener('dragend', () => { cardElem.classList.remove('dragging'); });
+        cardElem.addEventListener('dragover', (e) => { e.preventDefault(); cardElem.classList.add('drag-over'); });
+        cardElem.addEventListener('dragleave', () => { cardElem.classList.remove('drag-over'); });
+        cardElem.addEventListener('drop', (e) => {
+          e.preventDefault();
+          cardElem.classList.remove('drag-over');
+          const draggedIndex = parseInt(e.dataTransfer.getData('flashcard'));
+          reorderFlashcards(draggedIndex, index);
         });
         cardsContainer.appendChild(cardElem);
       });
+    }
+    function reorderFlashcards(draggedIndex, targetIndex) {
+      const folder = folders.find(f => f.id === currentFolderId);
+      if (!folder) return;
+      const flashcards = folder.flashcards;
+      const [draggedCard] = flashcards.splice(draggedIndex, 1);
+      flashcards.splice(targetIndex, 0, draggedCard);
+      saveFolders(folders);
+      renderFlashcards();
     }
     function parseFlashcardText(text) {
       const lines = text.split('\n').map(line => line.trim()).filter(line => line !== '');
       const cards = [];
       lines.forEach(line => {
-        const parts = line.split(' - ');
+        const parts = line.split(' --- ');
         if (parts.length >= 2) {
           const question = parts[0].trim();
           const answer = parts.slice(1).join(' - ').trim();
-          cards.push({ question, answer });
+          const difficulty = difficultySelect.value;
+          cards.push({ question, answer, difficulty });
         }
       });
       return cards;
     }
     generateBtn.addEventListener('click', () => {
       const inputText = flashcardInput.value;
-      if (!inputText) {
-        alert('Please enter flashcard data.');
-        return;
-      }
+      if (!inputText) { alert('Please enter flashcard data.'); return; }
       const newCards = parseFlashcardText(inputText);
-      if (newCards.length === 0) {
-        alert('No valid flashcard data found. Use " - " as a delimiter.');
-        return;
-      }
+      if (newCards.length === 0) { alert('No valid flashcard data found. Use " --- " as a delimiter.'); return; }
       const selectedFolderId = folderSelectElem.value || currentFolderId;
       const folder = folders.find(f => f.id === selectedFolderId);
-      if (!folder) {
-        alert('Please select or create a folder first.');
-        return;
-      }
+      if (!folder) { alert('Please select or create a folder first.'); return; }
       folder.flashcards = folder.flashcards.concat(newCards);
       saveFolders(folders);
       flashcardInput.value = '';
       renderFlashcards();
     });
 
-    // ---------- Quiz Functions ----------
+    // Voice Input (Speech Recognition)
+    voiceInputBtn.addEventListener('click', () => {
+      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+      if (!SpeechRecognition) {
+        alert('Speech recognition not supported in this browser.');
+        return;
+      }
+      const recognition = new SpeechRecognition();
+      recognition.lang = 'en-US';
+      recognition.interimResults = false;
+      recognition.maxAlternatives = 1;
+      recognition.start();
+      voiceInputBtn.textContent = '🎙️ Listening...';
+      recognition.onresult = (event) => {
+        const transcript = event.results[0][0].transcript;
+        flashcardInput.value += (flashcardInput.value ? "\n" : "") + transcript + " --- ";
+      };
+      recognition.onspeechend = () => {
+        recognition.stop();
+        voiceInputBtn.textContent = '🎙️ Record';
+      };
+      recognition.onerror = (event) => {
+        alert('Error occurred in recognition: ' + event.error);
+        voiceInputBtn.textContent = '🎙️ Record';
+      };
+    });
+
+    // Quiz Functions
     let quizCurrentCard = null;
     const startQuizBtn = document.getElementById('start-quiz-btn');
     const quizContainer = document.getElementById('quiz-container');
@@ -540,11 +1012,18 @@
     submitAnswerBtn.addEventListener('click', () => {
       const userAnswer = quizInput.value.trim().toLowerCase();
       const correctAnswer = quizCurrentCard.answer.trim().toLowerCase();
+      const quizStats = getQuizStats();
+      quizStats.attempts += 1;
       if (userAnswer === correctAnswer) {
         quizFeedback.textContent = 'Correct!';
+        quizStats.correct += 1;
+        quizStats.points += 10;
+        quizStats.streak += 1;
       } else {
         quizFeedback.textContent = 'Incorrect. The correct answer is: ' + quizCurrentCard.answer;
+        quizStats.streak = 0;
       }
+      saveQuizStats(quizStats);
       quizFeedback.style.display = 'block';
       quizInput.disabled = true;
       submitAnswerBtn.style.display = 'none';
@@ -554,10 +1033,29 @@
       loadNewQuestion();
     });
 
-    // ---------- Initialization ----------
+    // Dashboard / Analytics
+    function updateDashboard() {
+      const totalFoldersElem = document.getElementById('total-folders');
+      const totalFlashcardsElem = document.getElementById('total-flashcards');
+      const quizAttemptsElem = document.getElementById('quiz-attempts');
+      const quizCorrectElem = document.getElementById('quiz-correct');
+      const pointsEarnedElem = document.getElementById('points-earned');
+      const currentStreakElem = document.getElementById('current-streak');
+      totalFoldersElem.textContent = "Total Folders: " + folders.length;
+      let totalFlashcards = folders.reduce((sum, folder) => sum + folder.flashcards.length, 0);
+      totalFlashcardsElem.textContent = "Total Flashcards: " + totalFlashcards;
+      const quizStats = getQuizStats();
+      quizAttemptsElem.textContent = "Quiz Attempts: " + quizStats.attempts;
+      quizCorrectElem.textContent = "Correct Answers: " + quizStats.correct;
+      pointsEarnedElem.textContent = "Points: " + quizStats.points;
+      currentStreakElem.textContent = "Current Streak: " + quizStats.streak;
+    }
+
+    // Initialization
     document.addEventListener('DOMContentLoaded', () => {
       renderFolderList();
       renderFlashcards();
+      localStorage.setItem('lastActive', new Date().toISOString());
     });
   </script>
 </body>
